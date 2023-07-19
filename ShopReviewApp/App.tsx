@@ -1,28 +1,41 @@
 import 'react-native-gesture-handler';
 
 import React from 'react';
-import { ThemeProvider } from '@rneui/themed';
+import { ThemeProvider, createTheme } from '@rneui/themed';
+import { useAtom } from 'jotai';
 
-import { NavigationContainer } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
+/* atom */
+import { userAtom } from './src/atoms/user';
+import { themeModeAtom } from './src/atoms/themeMode';
 
-import TemplateScreen from './src/screens/TemplateScreen';
-import { ScreenPropsList } from './src/types/navigation';
+/* screen */
+import AuthScreen from './src/screens/AuthScreen';
+import AppStackNavigation from './src/navigations/AppStackNavigation';
 
-import { theme } from './src/theme';
-import { initializeFirebaseApp } from './src/libs/firebase';
-initializeFirebaseApp();
-
-const Stack = createStackNavigator<ScreenPropsList>();
+// import { initializeFirebaseApp } from './src/libs/firebase';
+// initializeFirebaseApp();
 
 const App: React.FC = () => {
+  const [user] = useAtom(userAtom);
+  const [themeMode] = useAtom(themeModeAtom);
+  const theme = createTheme({
+    mode: themeMode,
+    components: {
+      Button: {
+        raised: true,
+      },
+    },
+  });
+
   return (
     <ThemeProvider theme={theme}>
-      <NavigationContainer>
+      {/* {!user.name ? <AuthScreen /> : <AppStackNavigation />} */}
+      <AppStackNavigation />
+      {/* <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen name="Template" component={TemplateScreen} />
         </Stack.Navigator>
-      </NavigationContainer>
+      </NavigationContainer> */}
     </ThemeProvider>
   );
 };
